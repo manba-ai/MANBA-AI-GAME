@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "id": "km013-st7789-i8080-v1",
+  "package_format": "edge.game/1",
+  "sdk": 1,
+  "viewport": {
+    "width": 320,
+    "height": 240
+  },
+  "display": {
+    "pixel_format": "RGB565",
+    "font": "5x7-ascii"
+  },
+  "device_limits": {
+    "package_bytes": 524288,
+    "code_bytes": 131072,
+    "lua_memory_bytes": 524288,
+    "callback_instructions": 250000,
+    "instruction_hook": 1000,
+    "step_ms": 50,
+    "draw_commands": 300,
+    "bitmap_count": 64,
+    "bitmap_width": 64,
+    "bitmap_height": 64,
+    "bitmap_pixels": 49152,
+    "bitmap_work": 230400,
+    "text_bytes": 96,
+    "text_scale": 4
+  },
+  "host_policy": {
+    "wasm_lua_memory_bytes": 2097152,
+    "legacy_viewport_height": 320,
+    "raster_capture_commands": 800,
+    "snapshot_bytes": 24576,
+    "snapshot_limits": {
+      "snapshot_depth": 6,
+      "snapshot_fields": 40,
+      "snapshot_array_items": 800,
+      "snapshot_string_bytes": 4096
+    }
+  },
+  "authoring_preferences": {
+    "draw_commands": 120
+  },
+  "package_capabilities": [
+    "buttons-v1",
+    "viewport-320x240-v1",
+    "abxy-v1",
+    "audio-v1",
+    "audio-pcm-v1",
+    "audio-pcm-zlib-v1",
+    "bitmap-v1",
+    "bitmap-scale-v1",
+    "bitmap-column-v1",
+    "rumble-v1",
+    "records-v1",
+    "bitmap-indexed8-v2",
+    "bitmap-zlib-v1",
+    "graphics-v2",
+    "resources-v2"
+  ],
+  "input": {
+    "up": 1,
+    "down": 2,
+    "left": 4,
+    "right": 8,
+    "action": 16,
+    "held_timeout_ms": 400
+  },
+  "asset_modes": [
+    "procedural",
+    "rasterized",
+    "compiled"
+  ],
+  "graphics_v2": {
+    "batch_sprites": 256,
+    "tilemap_count": 16,
+    "tilemap_cells": 16384,
+    "cache_count": 2,
+    "cache_bytes": 307200
+  },
+  "resources_v2": {
+    "package_bytes": 2097152,
+    "code_bytes": 262144,
+    "lua_memory_bytes": 1048576,
+    "bitmap_count": 256,
+    "bitmap_pixels": 786432,
+    "asset_bytes": 1048576
+  },
+  "bitmap_v2": {
+    "width": 128,
+    "height": 128,
+    "pixels": 196608,
+    "colors": 256,
+    "alpha_levels": 16
+  }
+}

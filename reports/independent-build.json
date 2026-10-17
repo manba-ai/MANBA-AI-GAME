@@ -1,0 +1,225 @@
+{
+  "passed": true,
+  "archive_sha256": "afa83760b46b41bc21479f6d54f71c8e42ba212ee644d74696798a71810f4275",
+  "manifest_files_verified": 45,
+  "python": "3.14.0",
+  "pydantic": "2.13.5",
+  "pillow": "11.3.0",
+  "fresh_venv": true,
+  "dependency_locations_within_venv": true,
+  "os_denied_source_directories": 2,
+  "os_network_denied": true,
+  "path_contains_spaces_and_unicode": true,
+  "checks": [
+    "prerequisite-python",
+    "prerequisite-node",
+    "create-project-venv",
+    "install-project-dependencies",
+    "project-environment",
+    "integrity",
+    "python-tests",
+    "sdk-runtime-setup",
+    "new-game",
+    "freeze-rules-before-code",
+    "compile-hd-art",
+    "build-new-game",
+    "performance",
+    "build-geometry",
+    "play-geometry",
+    "build-title-art",
+    "play-title-art",
+    "shipped-play-import-and-audio"
+  ],
+  "frozen_rules_sha256": "3d9b33c8d0b6a81bc22fdfd845c262e5e2edc62ed2e3542fa61c69cb5078ff20",
+  "node_tests_passed": 13,
+  "python_tests_passed": 5,
+  "performance_running_step_results": 1180,
+  "new_game": {
+    "name": "Lane Courier",
+    "package_sha256": "927cc2f2afe7836b9479634b9ee35a90ef45e5ffeb4b63ac037f6a89c4a73a83",
+    "frozen_cases": 6,
+    "bitmap_count": 1,
+    "wasm_observations": 454
+  },
+  "guide": "docs/AUTHORING.md",
+  "documented_commands_executed": [
+    [
+      "python3",
+      "--version"
+    ],
+    [
+      "node",
+      "--version"
+    ],
+    [
+      "python3",
+      "-m",
+      "venv",
+      ".venv"
+    ],
+    [
+      ".venv/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "-r",
+      "requirements.txt"
+    ],
+    [
+      ".venv/bin/python",
+      "tools/game.py",
+      "setup"
+    ],
+    [
+      ".venv/bin/python",
+      "tools/game.py",
+      "new",
+      ".work/my-game",
+      "--name",
+      "My Game"
+    ],
+    [
+      ".venv/bin/python",
+      "tools/game.py",
+      "freeze",
+      ".work/my-game"
+    ],
+    [
+      ".venv/bin/python",
+      ".work/sdk/scripts/build_bitmap_pack.py",
+      ".work/my-game/art/pack.json",
+      "--output-dir",
+      ".work/my-game/art/compiled"
+    ],
+    [
+      ".venv/bin/python",
+      "tools/game.py",
+      "build",
+      ".work/my-game",
+      "--bindings",
+      ".work/my-game/art/compiled/bindings.json",
+      "--icon",
+      ".work/my-game/art/icon.png",
+      "--output",
+      ".work/my-game-v1"
+    ],
+    [
+      ".venv/bin/python",
+      ".work/sdk/scripts/profile_game_performance.py",
+      ".work/my-game-v1/game.edgegame",
+      "--scenarios",
+      ".work/my-game/stress.json",
+      "--output",
+      ".work/my-game-v1/performance.json"
+    ]
+  ],
+  "latest_lua_used_with_assets": true,
+  "source_configuration_unchanged": true,
+  "build_variants": {
+    "geometry": {
+      "passed": true,
+      "bitmap_count": 0,
+      "wasm_observations": 454
+    },
+    "title-art": {
+      "passed": true,
+      "bitmap_count": 7,
+      "wasm_observations": 454
+    }
+  },
+  "archive_inventory_verified": true,
+  "browser_tested": false,
+  "scope": "New authored rules/implementation, actual native and Wasm, release Play with Node Worker and DOM doubles; no browser UI claim",
+  "runtime_platforms": {
+    "darwin-arm64": {
+      "files": {
+        "luac": {
+          "bytes": 286392,
+          "architecture_verified": true
+        },
+        "game-runner": {
+          "bytes": 303400,
+          "architecture_verified": true
+        },
+        "package-json-probe": {
+          "bytes": 52224,
+          "architecture_verified": true
+        }
+      },
+      "execution_tested": true,
+      "wasm_observations": 454
+    },
+    "darwin-x86_64": {
+      "files": {
+        "luac": {
+          "bytes": 259416,
+          "architecture_verified": true
+        },
+        "game-runner": {
+          "bytes": 288624,
+          "architecture_verified": true
+        },
+        "package-json-probe": {
+          "bytes": 27712,
+          "architecture_verified": true
+        }
+      },
+      "execution_tested": true,
+      "wasm_observations": 454
+    },
+    "linux-x86_64": {
+      "files": {
+        "luac": {
+          "bytes": 243776,
+          "architecture_verified": true
+        },
+        "game-runner": {
+          "bytes": 394784,
+          "architecture_verified": true
+        },
+        "package-json-probe": {
+          "bytes": 440888,
+          "architecture_verified": true
+        }
+      },
+      "execution_tested": false
+    },
+    "linux-aarch64": {
+      "files": {
+        "luac": {
+          "bytes": 241336,
+          "architecture_verified": true
+        },
+        "game-runner": {
+          "bytes": 388160,
+          "architecture_verified": true
+        },
+        "package-json-probe": {
+          "bytes": 443064,
+          "architecture_verified": true
+        }
+      },
+      "execution_tested": false
+    }
+  },
+  "runtime_distribution": "prebuilt",
+  "macos_x86_64_execution": "Rosetta on macOS ARM64",
+  "distribution_audit": {
+    "outer_files": 46,
+    "sdk_files": 53,
+    "sdk_inventory": {
+      "compiler": 13,
+      "scripts": 4,
+      "games": 4,
+      "runtime": 14,
+      "docs": 5,
+      "licenses": 10,
+      "contracts": 1
+    },
+    "unlisted_files": 0,
+    "nested_source_archives": 0,
+    "source_maps": 0,
+    "wasm_debug_sections": 0,
+    "local_source_path_references": 0
+  }
+}

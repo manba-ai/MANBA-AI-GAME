@@ -1,0 +1,303 @@
+{
+  "name": "Lane Courier",
+  "description": "A deterministic three-lane courier. Collect three parcels before missing three. Portability test fixture, not final game artwork.",
+  "rules": [
+    "Left/right changes lane by one, clamped to lanes 1..3. Start in lane 2.",
+    "A parcel arrives every 1000 ms, repeating lanes 1,3,2. Matching the lane scores one, otherwise lose a life.",
+    "Collect three parcels to win; three misses lose. Start score zero with three lives.",
+    "A starts. Pause and stop freeze simulation, restart resets to title."
+  ],
+  "tests": [
+    {
+      "name": "Wait for explicit start",
+      "actions": [
+        {
+          "kind": "step",
+          "value": 50,
+          "count": 20
+        }
+      ],
+      "expect": [
+        {
+          "path": "mode",
+          "op": "eq",
+          "value": "menu"
+        },
+        {
+          "path": "ticks",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "path": "score",
+          "op": "eq",
+          "value": 0
+        }
+      ],
+      "rule_ids": [
+        4
+      ]
+    },
+    {
+      "name": "Clamp to left lane",
+      "actions": [
+        {
+          "kind": "input",
+          "value": "a"
+        },
+        {
+          "kind": "input",
+          "value": "left"
+        },
+        {
+          "kind": "input",
+          "value": "left"
+        }
+      ],
+      "expect": [
+        {
+          "path": "lane",
+          "op": "eq",
+          "value": 1
+        },
+        {
+          "path": "score",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "path": "lives",
+          "op": "eq",
+          "value": 3
+        }
+      ],
+      "rule_ids": [
+        1
+      ]
+    },
+    {
+      "name": "Collect three and win",
+      "actions": [
+        {
+          "kind": "input",
+          "value": "a"
+        },
+        {
+          "kind": "input",
+          "value": "left"
+        },
+        {
+          "kind": "step",
+          "value": 50,
+          "count": 20
+        },
+        {
+          "kind": "input",
+          "value": "right"
+        },
+        {
+          "kind": "input",
+          "value": "right"
+        },
+        {
+          "kind": "step",
+          "value": 50,
+          "count": 20
+        },
+        {
+          "kind": "input",
+          "value": "left"
+        },
+        {
+          "kind": "step",
+          "value": 50,
+          "count": 20
+        }
+      ],
+      "expect": [
+        {
+          "path": "status",
+          "op": "eq",
+          "value": "won"
+        },
+        {
+          "path": "score",
+          "op": "eq",
+          "value": 3
+        },
+        {
+          "path": "lives",
+          "op": "eq",
+          "value": 3
+        },
+        {
+          "path": "ticks",
+          "op": "eq",
+          "value": 60
+        }
+      ],
+      "rule_ids": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "Three misses lose",
+      "actions": [
+        {
+          "kind": "input",
+          "value": "a"
+        },
+        {
+          "kind": "step",
+          "value": 50,
+          "count": 40
+        },
+        {
+          "kind": "input",
+          "value": "left"
+        },
+        {
+          "kind": "step",
+          "value": 50,
+          "count": 20
+        }
+      ],
+      "expect": [
+        {
+          "path": "status",
+          "op": "eq",
+          "value": "over"
+        },
+        {
+          "path": "score",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "path": "lives",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "path": "ticks",
+          "op": "eq",
+          "value": 60
+        }
+      ],
+      "rule_ids": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "Pause and stop freeze",
+      "actions": [
+        {
+          "kind": "input",
+          "value": "a"
+        },
+        {
+          "kind": "step",
+          "value": 50,
+          "count": 4
+        },
+        {
+          "kind": "input",
+          "value": "pause"
+        },
+        {
+          "kind": "step",
+          "value": 50,
+          "count": 10
+        },
+        {
+          "kind": "input",
+          "value": "a"
+        },
+        {
+          "kind": "input",
+          "value": "stop"
+        },
+        {
+          "kind": "step",
+          "value": 50,
+          "count": 10
+        }
+      ],
+      "expect": [
+        {
+          "path": "status",
+          "op": "eq",
+          "value": "paused"
+        },
+        {
+          "path": "ticks",
+          "op": "eq",
+          "value": 4
+        },
+        {
+          "path": "elapsed",
+          "op": "eq",
+          "value": 200
+        }
+      ],
+      "rule_ids": [
+        4
+      ]
+    },
+    {
+      "name": "Restart resets after scoring",
+      "actions": [
+        {
+          "kind": "input",
+          "value": "a"
+        },
+        {
+          "kind": "input",
+          "value": "left"
+        },
+        {
+          "kind": "step",
+          "value": 50,
+          "count": 20
+        },
+        {
+          "kind": "input",
+          "value": "restart"
+        }
+      ],
+      "expect": [
+        {
+          "path": "mode",
+          "op": "eq",
+          "value": "menu"
+        },
+        {
+          "path": "ticks",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "path": "score",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "path": "lane",
+          "op": "eq",
+          "value": 2
+        },
+        {
+          "path": "lives",
+          "op": "eq",
+          "value": 3
+        }
+      ],
+      "rule_ids": [
+        4
+      ]
+    }
+  ]
+}

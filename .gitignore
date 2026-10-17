@@ -1,0 +1,10 @@
+.work/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+dist/
+.env
+.env.*
+!.env.example
+

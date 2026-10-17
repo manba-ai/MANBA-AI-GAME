@@ -1,0 +1,3 @@
+ASCII prefix of the classic Adafruit GFX font, glcdfont.h.
+Source SHA-256: 04d399ad4a25a132b52239b3c53c5638350845dfc3a2d036a0fb67bac353025e
+License: font.txt

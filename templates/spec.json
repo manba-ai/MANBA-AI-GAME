@@ -1,0 +1,67 @@
+{
+  "name": "My Game",
+  "description": "填写游戏玩法与目标。",
+  "viewport": {
+    "width": 320,
+    "height": 240
+  },
+  "records_id": "new-game",
+  "rules": [],
+  "ui": {
+    "input_mode": "events",
+    "system": "game-hud-v1",
+    "controls": {
+      "left": "Move left",
+      "right": "Move right",
+      "a": "Start / resume / retry",
+      "action": "Start / resume / retry",
+      "b": "Exit from system pages",
+      "x": "Retry from pause/result",
+      "y": "Help / title",
+      "pause": "Pause / resume",
+      "restart": "Return to title",
+      "stop": "Pause and clear input"
+    },
+    "controller": {
+      "version": 1,
+      "layout": "xbox",
+      "primary": "a",
+      "hint": "Set controls for this game.",
+      "diagonal": false,
+      "bindings": {
+        "left": {
+          "key": "left",
+          "label": "Move left",
+          "repeat_ms": 0
+        },
+        "right": {
+          "key": "right",
+          "label": "Move right",
+          "repeat_ms": 0
+        },
+        "a": {
+          "key": "a",
+          "label": "Start / resume / retry",
+          "repeat_ms": 0
+        },
+        "b": {
+          "key": "b",
+          "label": "Exit from system pages",
+          "repeat_ms": 0
+        },
+        "x": {
+          "key": "x",
+          "label": "Retry from pause/result",
+          "repeat_ms": 0
+        },
+        "y": {
+          "key": "y",
+          "label": "Help / title",
+          "repeat_ms": 0
+        }
+      }
+    }
+  },
+  "bitmap_compression": "zlib",
+  "tests": []
+}

@@ -1,0 +1,10 @@
+{
+  "format": "manba.project-sources/1",
+  "date": "2026-10-17",
+  "product": "MANBA 手柄",
+  "archives": {
+    "sdk/sdk.zip": "531bf2423ebbc82744c69cfa23db280aefec46dc9777bd576460a87fa4b452ef"
+  },
+  "contract_sha256": "1e4675a92d737eedd075a275ad30f7bc354bf374fe707d8692b341c92d06b698",
+  "sdk_revision": "GameSpec compiler, prebuilt native validation tools and bundled Play runtime"
+}

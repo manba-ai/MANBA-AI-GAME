@@ -1,0 +1,13 @@
+{
+  "format": "manba.play/1",
+  "html_sha256": "b52d8dd4e02728e29f6ecd6b952cd18961609cc551b9254a1962d99066852f29",
+  "worker_sha256": "c5dccfd1953c2ec1c1b801816b39034093825f5e844f4138478af3d8e1958e7e",
+  "contract_sha256": "1e4675a92d737eedd075a275ad30f7bc354bf374fe707d8692b341c92d06b698",
+  "bundled_games": 0,
+  "browser_verified": false,
+  "device_verified": false,
+  "sdk_runtime": {
+    "play-runtime.cjs": "6caa93dde45015c6b1f52c7a20910989a48170ea9fa10c18ce3c952eeb9ea981",
+    "glue.wasm": "95f3f19ddb740125883bc41d5ec670cd0828e7b58c8bdad385323cbff497b55c"
+  }
+}
