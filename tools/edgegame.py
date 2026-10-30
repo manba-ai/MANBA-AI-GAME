@@ -100,15 +100,9 @@ def prepare(args):
     artdir = output.parent/(output.stem+'-compiled')
     artdir.mkdir(parents=True, exist_ok=True)
     with Image.open(args.icon) as source:
-        if abs(source.width/source.height-4/3) > .01 or source.convert('RGBA').getextrema()[3] != (255, 255):
-            raise ValueError('Icon source must be opaque 4:3 art')
-        spec['launcher_icon'] = validate_launcher_icon(pack(encode_v2(source, (128, 96), transparent=False)))
-    icon_manifest = artdir/'icon-pack.json'
-    write_json(icon_manifest, {'format': 'bitmap-pack/1', 'sprites': [{
-        'name': 'launcher', 'file': str(args.icon.resolve()), 'size': [32, 24],
-        'transparent': False, 'trim': False, 'resample': 'lanczos'}]})
-    result = compile_pack(icon_manifest, artdir/'icon')
-    spec['launcher_card'] = json.loads(Path(result['atlas']).read_text())[0]
+        if source.width != source.height or source.convert('RGBA').getextrema()[3] != (255, 255):
+            raise ValueError('Icon source must be opaque square art; compiled size is 80x80')
+        spec['launcher_icon'] = validate_launcher_icon(pack(encode_v2(source, (80, 80), transparent=False)))
     if args.title_art:
         with Image.open(args.title_art) as source:
             if abs(source.width/source.height-4/3) > .01:

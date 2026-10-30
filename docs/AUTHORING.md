@@ -43,7 +43,7 @@ python3 -m venv .venv
 将素材放在 `.work/my-game/art/`：
 
 - `pack.json` 及其引用的 PNG：游戏图集，按 [素材说明](ASSETS.md) 编写清单。
-- `icon.png`：4:3、不透明图标，构建时生成包内的 128×96 和 32×24 图标。
+- `icon.png`：80×80、不透明的正方形图标，构建时仅生成包内的 `launcher_icon`，不生成兼容图标。更大的正方形原图会缩放到 80×80。
 - `title.png`：可选的 4:3 启动插画；游戏自行绘制标题时可省略。
 
 编译图集：
@@ -64,7 +64,7 @@ GameSpec 显式设置 `bitmap_compression: "zlib"`。图集、标题和运行内
   --output .work/my-game-v1
 ```
 
-游戏图标由 `--icon` 编译；已有 `launcher_card` 时可省略。需要使用启动插画时，加 `--title-art .work/my-game/art/title.png`，游戏名需为大写后可显示的 ASCII 标题，description 至少 20 字符。素材清单与 GameSpec 的 `runtime_profile` 必须一致。
+游戏图标由 `--icon` 编译；已有有效的 80×80 `launcher_icon`，且不传 `--bindings` / `--title-art` 时可省略。需要使用启动插画时，加 `--title-art .work/my-game/art/title.png`，游戏名需为大写后可显示的 ASCII 标题，description 至少 20 字符。素材清单与 GameSpec 的 `runtime_profile` 必须一致。
 
 构建读取最新 `game.lua`、合入素材、检查包与冻结测试，再比较本机 Lua 和 Wasm 的绘制指令及状态。成功输出：
 

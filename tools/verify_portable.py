@@ -23,6 +23,14 @@ def write(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
 
+def check_icon(assets):
+    icon = assets.get('launcher_icon', {})
+    if (icon.get('width'), icon.get('height')) != (80, 80) or icon.get('encoding') != 'indexed8-zlib':
+        raise ValueError('Build must contain an 80x80 compressed launcher icon')
+    if 'launcher_card' in assets:
+        raise ValueError('Build must not contain a compatibility icon')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--archive', type=Path, required=True)
@@ -141,8 +149,8 @@ def main():
     parcel = Image.new('RGBA', (16, 16)); draw = ImageDraw.Draw(parcel)
     draw.rectangle((1, 2, 14, 14), fill=(235, 173, 66, 255)); draw.rectangle((6, 2, 9, 14), fill=(255, 235, 193, 255))
     parcel.save(art / 'parcel.png')
-    icon = Image.new('RGB', (128, 96), '#102a34'); draw = ImageDraw.Draw(icon)
-    draw.polygon([(15, 95), (48, 4), (80, 4), (113, 95)], fill='#365864'); draw.rectangle((43, 30, 85, 72), fill='#efb94e'); draw.rectangle((60, 30, 68, 72), fill='#ffebc0')
+    icon = Image.new('RGB', (80, 80), '#102a34'); draw = ImageDraw.Draw(icon)
+    draw.polygon([(5, 79), (28, 4), (52, 4), (75, 79)], fill='#365864'); draw.rectangle((23, 23, 57, 57), fill='#efb94e'); draw.rectangle((37, 23, 43, 57), fill='#ffebc0')
     icon.save(art / 'icon.png')
     write(art / 'pack.json', {'format': 'bitmap-pack/1', 'sprites': [{'name': 'parcel', 'file': 'parcel.png', 'size': [16, 16], 'encoding': 'indexed8-alpha4', 'transparent': True, 'trim': False, 'resample': 'nearest', 'pivot': [8, 8]}]})
     documented('compile-hd-art')
@@ -151,8 +159,10 @@ def main():
     built_spec = json.loads((build / 'spec.json').read_text())
     if built_spec['code'] != code or (source / 'spec.json').read_bytes() != source_spec:
         raise ValueError('Build did not use the latest Lua or changed source configuration')
-    if not all(built_spec.get(name) for name in ('bitmaps', 'launcher_card', 'launcher_icon')):
+    if not all(built_spec.get(name) for name in ('bitmaps', 'launcher_icon')):
         raise ValueError('Build did not include the authored assets')
+    check_icon(built_spec)
+    check_icon(json.loads((build / 'game.edgegame').read_text())['assets'])
     if hashlib.sha256((source / 'frozen-tests.json').read_bytes()).hexdigest() != frozen_sha:
         raise ValueError('Frozen rules changed')
     victory = spec['tests'][2]['actions']
@@ -168,15 +178,24 @@ def main():
     variants = {}
     for name, flags, expected_bitmaps in (
             ('geometry', [], 0),
-            ('title-art', ['--bindings', art / 'compiled/bindings.json', '--title-art', art / 'title.png'], 7)):
+            ('title-art', ['--bindings', art / 'compiled/bindings.json', '--title-art', art / 'title.png'], 7),
+            ('precompiled-icon', [], 0)):
         if name == 'title-art':
             title = Image.new('RGB', (320, 240), '#102a34')
             ImageDraw.Draw(title).rectangle((80, 60, 240, 180), fill='#efb94e')
             title.save(art / 'title.png')
         variant = root / '.work' / name
-        run('build-' + name, py, 'tools/game.py', 'build', source, '--icon', art / 'icon.png',
+        variant_source, icon_flags = source, ['--icon', art / 'icon.png']
+        if name == 'precompiled-icon':
+            variant_source = root / '.work/precompiled-source'
+            write(variant_source / 'spec.json', dict(spec, launcher_icon=built_spec['launcher_icon']))
+            for filename in ('game.lua', 'frozen-tests.json'):
+                (variant_source / filename).write_bytes((source / filename).read_bytes())
+            icon_flags = []
+        run('build-' + name, py, 'tools/game.py', 'build', variant_source, *icon_flags,
             '--output', variant, *flags)
         package = json.loads((variant / 'game.edgegame').read_text())
+        check_icon(package['assets'])
         count = len(package['assets'].get('bitmaps', []))
         if count != expected_bitmaps:
             raise ValueError('Unexpected atlas for ' + name)
@@ -195,6 +214,7 @@ def main():
               'new_game':{'name':spec['name'], 'package_sha256':validation['package_sha256'], 'frozen_cases':validation['frozen_cases'], 'bitmap_count':validation['bitmap_count'], 'wasm_observations':wasm['observations']},
               'guide':'docs/AUTHORING.md', 'documented_commands_executed':executed_commands,
               'latest_lua_used_with_assets':True, 'source_configuration_unchanged':True,
+              'launcher_icon':{'width':80, 'height':80, 'compatibility_icon':False},
               'build_variants':variants, 'archive_inventory_verified':True,
               'browser_tested':False,
               'scope':'New authored rules/implementation, actual native and Wasm, release Play with Node Worker and DOM doubles; no browser UI claim'}

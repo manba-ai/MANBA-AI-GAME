@@ -6,6 +6,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 import warnings
 import zipfile
@@ -17,6 +18,79 @@ spec.loader.exec_module(edgegame)
 check_spec = importlib.util.spec_from_file_location('check_project', ROOT / 'tools/check_project.py')
 checks = importlib.util.module_from_spec(check_spec)
 check_spec.loader.exec_module(checks)
+
+
+class LauncherIconTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.workspace = tempfile.TemporaryDirectory()
+        cls.sdk = Path(cls.workspace.name) / 'sdk'
+        edgegame.extract(ROOT / 'sdk/sdk.zip', cls.sdk)
+        sys.path.insert(0, str(cls.sdk))
+
+    @classmethod
+    def tearDownClass(cls):
+        sys.path[:] = [entry for entry in sys.path if entry != str(cls.sdk)]
+        cls.workspace.cleanup()
+
+    def test_icon_preparation_outputs_only_80_square_icon(self):
+        from PIL import Image
+        from compiler.bitmaps import unpack
+        from compiler.authoring.schema import GameSpec
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / 'spec.json'
+            source.write_text('{}')
+            icon = root / 'icon.png'
+            Image.new('RGB', (80, 80), '#ff0000').save(icon)
+            output = root / 'prepared.json'
+            edgegame.prepare(SimpleNamespace(sdk=self.sdk, spec=source, icon=icon,
+                                            bindings=None, title_art=None, output=output))
+            prepared = json.loads(output.read_text())
+            self.assertNotIn('launcher_card', prepared)
+            self.assertEqual(set(prepared), {'launcher_icon', 'bitmap_compression'})
+            image = prepared['launcher_icon']
+            self.assertEqual((image['width'], image['height']), (80, 80))
+            decoded = unpack(image)
+            pixels = bytes.fromhex(decoded['pixels'])
+            self.assertEqual(len(pixels), 6400)
+            self.assertTrue(all(decoded['palette'][index*4:index*4+4] == 'f800'
+                                and decoded['alpha'][index] == 'f' for index in pixels))
+            self.assertEqual(list(root.rglob('icon-pack.json')), [])
+            spec = json.loads((ROOT / 'templates/spec.json').read_text())
+            spec.update(json.loads((ROOT / 'tests/fixtures/portable/rules.json').read_text()))
+            spec.update(prepared, code=(ROOT / 'tests/fixtures/portable/game.lua').read_text())
+            GameSpec.model_validate(spec)
+
+    def test_icon_source_rejects_rectangular_and_transparent_art(self):
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / 'spec.json'
+            source.write_text('{}')
+            for size, alpha in (((128, 96), 255), ((80, 80), 254)):
+                with self.subTest(size=size, alpha=alpha):
+                    icon = root / 'icon.png'
+                    Image.new('RGBA', size, (255, 0, 0, alpha)).save(icon)
+                    output = root / 'prepared.json'
+                    with self.assertRaisesRegex(ValueError, 'square'):
+                        edgegame.prepare(SimpleNamespace(sdk=self.sdk, spec=source, icon=icon,
+                                                        bindings=None, title_art=None, output=output))
+                    self.assertFalse(output.exists())
+
+    def test_encoded_icon_requires_80_square_opaque_pixels(self):
+        from PIL import Image
+        from compiler.bitmaps import pack
+        from compiler.packages import validate_launcher_icon
+        from scripts.bitmap_pack import encode_v2
+        for size in ((128, 96), (32, 24)):
+            with self.subTest(size=size):
+                icon = pack(encode_v2(Image.new('RGB', size, 'red'), size, transparent=False))
+                with self.assertRaisesRegex(ValueError, '80×80'):
+                    validate_launcher_icon(icon)
+        transparent = pack(encode_v2(Image.new('RGBA', (80, 80)), (80, 80)))
+        with self.assertRaisesRegex(ValueError, '不透明'):
+            validate_launcher_icon(transparent)
 
 
 class ProjectTests(unittest.TestCase):

@@ -18,6 +18,7 @@
 | code | Lua 文本；编译后连 SDK adapter 默认至多 128 KiB，resources-v2 为 256 KiB |
 | requires | 作者可显式选 `bitmap-scale-v1`、`bitmap-column-v1`、`rumble-v1`、`graphics-v2` |
 | runtime_profile | 默认 `legacy`；使用扩展资源预算时显式选择 `resources-v2` |
+| launcher_icon | 80×80、不透明的 `indexed8-zlib` 图标，由 `--icon` 编译；构建必需，不生成 `launcher_card` |
 
 音频、位图、压缩、ABXY、records 的能力由编译器推导，不要手工塞进 `requires`。使用 `screen.sprite` 的 width/height 参数时声明缩放能力。
 

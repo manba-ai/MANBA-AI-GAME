@@ -32,7 +32,7 @@ def main():
     build.add_argument('directory', type=Path)
     build.add_argument('--output', type=Path, required=True)
     build.add_argument('--bindings', type=Path, help='Compiled bitmap bindings.json')
-    build.add_argument('--icon', type=Path, help='Opaque 4:3 PNG for package icons')
+    build.add_argument('--icon', type=Path, help='Opaque square PNG for the 80x80 game icon')
     build.add_argument('--title-art', type=Path, help='Optional 4:3 title illustration')
     args = parser.parse_args()
     sdk = args.sdk.resolve()
@@ -73,9 +73,9 @@ def main():
         return
     output = args.output.resolve()
     if (args.bindings or args.title_art) and not args.icon:
-        raise ValueError('Asset preparation needs --icon with an opaque 4:3 PNG')
-    if not args.icon and not source.get('launcher_card'):
-        raise ValueError('Provide --icon with an opaque 4:3 PNG for the game icon')
+        raise ValueError('Asset preparation needs --icon with an opaque square PNG')
+    if not args.icon and not source.get('launcher_icon'):
+        raise ValueError('Provide --icon with an opaque square PNG for the 80x80 game icon')
     # Fresh directory makes failed candidates and earlier successful builds
     # unambiguous. The underlying builder retains failed packages for diagnosis.
     if output.exists():
